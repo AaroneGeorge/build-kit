@@ -6,16 +6,23 @@ Six commands — **/brief → /scout → /build → /debrief → /ship**, plus *
 
 > Plugin commands are namespaced, so they appear as `/buidl-kit:brief`, `/buidl-kit:scout`, etc. (written as `/brief` … below for brevity).
 
-## Install (local marketplace)
+## Install
 
-From a Claude Code session:
+From a Claude Code session — **from GitHub** (published):
+
+```
+/plugin marketplace add AaroneGeorge/build-kit
+/plugin install buidl-kit@buidl-kit-marketplace
+```
+
+Or **from a local clone** (development):
 
 ```
 /plugin marketplace add /Users/aarone/programs/buidl/build-kit
 /plugin install buidl-kit@buidl-kit-marketplace
 ```
 
-No git commit required — Claude Code reads the working tree for a local path. Verify with `/plugin` (Installed tab); you'll see the `buidl-kit:*` commands in `/help`. After editing plugin files, run `/reload-plugins` or restart the session.
+Local installs need no git commit — Claude Code reads the working tree. Verify with `/plugin` (Installed tab); you'll see the `buidl-kit:*` commands in `/help`. After editing plugin files, run `/reload-plugins` or restart the session.
 
 ## 60-second cheatsheet — which command, when
 
@@ -57,27 +64,20 @@ Expect all five DEBRIEF sections and the seeded bugs — missing signer check, m
 
 It's yours — edit any `knowledge/*.md`. Keep the front-matter (`description`, `sources`, `last_verified`) and the ≤400-line limit. `/scout` and `/kb-update` append to `reuse-index/` and re-stamp `last_verified` as they learn.
 
-## Publish later (one-time)
+## Published
 
-When you want it installable from GitHub instead of a local path:
+Live at **[github.com/AaroneGeorge/build-kit](https://github.com/AaroneGeorge/build-kit)** — install with the GitHub commands above. To ship updates:
 
 ```
 cd /Users/aarone/programs/buidl/build-kit
-git add -A && git commit -m "buidl-kit v0.1.0"
-gh repo create buidl --public --source=. --remote=origin --push
+git add -A && git commit -m "your message"
+git push
 ```
 
-Then anyone (including you, on another machine) installs with:
-
-```
-/plugin marketplace add <your-gh-username>/buidl
-/plugin install buidl-kit@buidl-kit-marketplace
-```
-
-Update by pushing commits; users run `/plugin marketplace update buidl-kit-marketplace`. Before publishing, edit `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` to add your name / homepage / repository.
+Users pull updates with `/plugin marketplace update buidl-kit-marketplace`.
 
 > The plugin lives in its own folder (`build-kit/`) with its own git repo, fully separate from your product projects (`NFA/` etc.). `.gitignore` covers build artifacts and secrets.
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE). (Change the copyright holder from `aarone` to your legal/preferred name before publishing.) Knowledge files cite their sources; check each cited repo's own license before forking its code.
+MIT — see [`LICENSE`](./LICENSE), © 2026 Aarone George. Knowledge files cite their sources; check each cited repo's own license before forking its code.

@@ -1,6 +1,6 @@
 {
   "name": "buidl-kit-marketplace",
-  "owner": { "name": "aarone" },
+  "owner": { "name": "Aarone George", "url": "https://github.com/AaroneGeorge" },
   "description": "buidl-kit: reuse-first crypto ship-fast toolkit (Solana primary, EVM secondary).",
   "plugins": [
     {
@@ -9,6 +9,8 @@
       "description": "Reuse-first toolkit to ship production-grade Solana/EVM crypto apps in 6-12 hours.",
       "version": "0.1.0",
       "license": "MIT",
+      "homepage": "https://github.com/AaroneGeorge/build-kit",
+      "repository": "https://github.com/AaroneGeorge/build-kit",
       "keywords": ["solana", "anchor", "evm", "crypto", "security"]
     }
   ]
