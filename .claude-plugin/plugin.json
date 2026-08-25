@@ -1,0 +1,8 @@
+{
+  "name": "buidl-kit",
+  "version": "0.1.0",
+  "description": "Reuse-first toolkit to ship production-grade Solana/EVM crypto apps in 6-12 hours: brief -> scout -> build -> debrief -> ship, backed by a curated knowledge base.",
+  "author": { "name": "aarone" },
+  "license": "MIT",
+  "keywords": ["solana", "anchor", "evm", "crypto", "security", "defi", "reuse", "web3"]
+}

@@ -1,0 +1,19 @@
+[package]
+name = "vulnerable-escrow"
+version = "0.1.0"
+description = "Intentionally vulnerable Anchor sample for buidl-kit /debrief and /ship testing. DO NOT DEPLOY."
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "vulnerable_escrow"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = "0.30.1"

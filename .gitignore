@@ -1,0 +1,20 @@
+# Build artifacts
+node_modules/
+.next/
+dist/
+build/
+out/
+target/
+.anchor/
+test-ledger/
+*.rs.bk
+
+# Env & secrets (never commit)
+.env
+.env.*
+*.pem
+*-keypair.json
+id.json
+
+# OS
+.DS_Store
