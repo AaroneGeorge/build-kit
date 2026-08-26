@@ -18,7 +18,7 @@ From a Claude Code session — **from GitHub** (published):
 Or **from a local clone** (development):
 
 ```
-/plugin marketplace add /Users/aarone/programs/buidl/build-kit
+/plugin marketplace add /Users/aarone/programs/claude/build-kit
 /plugin install buidl-kit@buidl-kit-marketplace
 ```
 
@@ -69,7 +69,7 @@ It's yours — edit any `knowledge/*.md`. Keep the front-matter (`description`, 
 Live at **[github.com/AaroneGeorge/build-kit](https://github.com/AaroneGeorge/build-kit)** — install with the GitHub commands above. To ship updates:
 
 ```
-cd /Users/aarone/programs/buidl/build-kit
+cd /Users/aarone/programs/claude/build-kit
 git add -A && git commit -m "your message"
 git push
 ```
