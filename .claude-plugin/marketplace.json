@@ -6,12 +6,11 @@
     {
       "name": "buidl-kit",
       "source": "./",
-      "description": "Reuse-first toolkit to ship production-grade Solana/EVM crypto apps in 6-12 hours.",
-      "version": "0.1.0",
+      "description": "Reuse-first toolkit to ship production-grade Solana/EVM crypto apps in 6-12 hours, with hackathon mode.",
       "license": "MIT",
       "homepage": "https://github.com/AaroneGeorge/build-kit",
       "repository": "https://github.com/AaroneGeorge/build-kit",
-      "keywords": ["solana", "anchor", "evm", "crypto", "security"]
+      "keywords": ["solana", "anchor", "evm", "crypto", "security", "hackathon"]
     }
   ]
 }

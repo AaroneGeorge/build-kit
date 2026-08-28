@@ -2,7 +2,7 @@
 
 Reuse-first Claude Code plugin for shipping **production-grade crypto products in 6–12 hours**. Solana-primary, EVM-secondary. Its job is to make **find → evaluate → adapt proven code** the default, and to spend your scarce attention on **verification** — security, latency, and the few things worth your eyeballs.
 
-Six commands — **/brief → /scout → /build → /debrief → /ship**, plus **/kb-update** — backed by a curated `knowledge/` base (the brain) and six reusable subagents.
+Ten commands — the core flow **/brief → /scout → /build → /debrief → /ship**, plus **/kb-update**, **/doctor**, **/handoff**, **/burn**, and **/update** — a **hackathon-build** skill that kicks in automatically when a deadline looms, a curated `knowledge/` base (the brain), and six reusable subagents.
 
 > Plugin commands are namespaced, so they appear as `/buidl-kit:brief`, `/buidl-kit:scout`, etc. (written as `/brief` … below for brevity).
 
@@ -19,6 +19,11 @@ Six commands — **/brief → /scout → /build → /debrief → /ship**, plus *
   - [/debrief](#debrief--verify-while-you-learn)
   - [/ship](#ship--advisory-pre-deploy-gate)
   - [/kb-update](#kb-update--keep-the-brain-fresh)
+  - [/doctor](#doctor--environment-preflight)
+  - [/handoff](#handoff--session-state)
+  - [/burn](#burn--the-hackathon-clock)
+  - [/update](#update--pull-latest-from-main)
+- [Hackathon mode — the hackathon-build skill](#hackathon-mode--the-hackathon-build-skill)
 - [The agents (usable standalone)](#the-agents-usable-standalone)
 - [Usage patterns](#usage-patterns)
 - [The knowledge base](#the-knowledge-base)
@@ -70,6 +75,11 @@ Pull published updates with:
 | Freshly built code (or any repo/diff) | `/debrief [path]` | `DEBRIEF.md`: walkthrough, security, latency, test gaps, **the 5 to eyeball** |
 | Something about to deploy | `/ship [path]` | Advisory gate: criticals loud at top (non-blocking) + deploy runbook |
 | Stale knowledge | `/kb-update [reuse\|security\|all]` | Refreshed reuse-index + incident lessons, dated + sourced |
+| A hackathon deadline | just say "hackathon" (or `/buidl-kit:hackathon-build`) | Clock-driven sprint: ruthless scoping, vertical slices, deploy-early, scale-later seams |
+| A fresh machine / flaky toolchain | `/doctor` | PASS/WARN/FAIL preflight + the exact fix command for each failure |
+| A session about to die (or done for the day) | `/handoff` | `STATE.md` — the next session resumes in minutes, not re-derivation |
+| Mid-sprint "are we on pace?" | `/burn` | Elapsed vs slices shipped, pace verdict, what to cut if behind |
+| A stale plugin install | `/update [check]` | Latest main + a changelog; your local knowledge edits protected |
 
 Typical flow: `/brief` → `/scout` → `/build` (chains `/debrief`) → `/ship`. Each also stands alone — `/debrief` and `/ship` run on any repo or diff.
 
@@ -123,13 +133,14 @@ Typical flow: `/brief` → `/scout` → `/build` (chains `/debrief`) → `/ship`
 ```
 
 **The process.**
-1. Reads `SPEC.md` + `stack-defaults.md`, identifies the archetype, loads `knowledge/recipes/<archetype>.md`.
+1. Reads `SPEC.md` + `stack-defaults.md` (and `STATE.md`, if a previous session left one via `/handoff` — it resumes rather than replans), identifies the archetype, loads `knowledge/recipes/<archetype>.md`.
 2. **Scouts first** — launches `repo-scout` to lock reuse candidates *before* any code is written. Writing from scratch has to be justified in the plan.
-3. **Plans** off the recipe's 6-hour spine: what to fork/import, what to change, the 3 dangerous parts.
-4. **Implements** — forks/imports the chosen candidates and adapts them, parallelizing independent work (program vs. frontend vs. services) across subagents. Follows `solana/anchor-idioms.md` and the security checklist while writing, so fund-moving paths are safe-by-construction rather than fixed later.
-5. **Tests** per `knowledge/testing/` — at minimum the archetype's 5 non-negotiable tests, using LiteSVM/bankrun for speed.
-6. **Deploys to devnet only.**
-7. **Always chains `/debrief`** on what it built, so you get the walkthrough and review while it's fresh.
+3. **Plans vertical slices** off the recipe's 6-hour spine: 2–5 thin **end-to-end** slices (program instruction + client call + visible UI change — never a layer like "all models, then all views"). Slice 1 is the walking skeleton: the thinnest fund-flow loop, deployable. The 3 dangerous parts are named and assigned to their slices.
+4. **Implements slice by slice** — forks/imports the chosen candidates and adapts them, parallelizing independent work (program vs. frontend vs. services) across subagents within a slice. After each slice: tests green → commit `slice-N: …` → redeploy devnet — so **there is always a demoable state**. Fund-moving paths follow `solana/anchor-idioms.md` and the security checklist, safe-by-construction rather than fixed later.
+5. **Tests** per `knowledge/testing/` — fund-path tests land inside their slice; all 5 of the archetype's non-negotiables are green by the final slice. LiteSVM/bankrun for speed.
+6. **Uses the official Solana Developer MCP when installed** — docs lookups instead of guessing APIs, plus a `program_autofixer` check→fix→recheck loop before review. Not installed? It suggests the one-liner once and moves on (`/doctor` checks for it too).
+7. **Deploys to devnet only.**
+8. **Always chains `/debrief`** on what it built, so you get the walkthrough and review while it's fresh.
 
 **Guardrails.** Devnet/demo first, always — mainnet requires an explicit human "yes" and it will stop and ask. Secrets and keys never land in the repo (env/keychain only). Any unaudited logic it ported is called out and handed to the `/debrief` security pass.
 
@@ -144,7 +155,7 @@ Typical flow: `/brief` → `/scout` → `/build` (chains `/debrief`) → `/ship`
 /debrief "the diff on this branch"
 ```
 
-**What it does.** Detects the chain(s) — Anchor/Rust or native Solana → `solana-security-auditor`; Solidity/Foundry → `evm-security-auditor`; both if both are present — then launches four reviewers **in parallel** and synthesizes their returns into one report, resolving overlaps and ranking findings by severity.
+**What it does.** Detects the chain(s) — Anchor/Rust or native Solana → `solana-security-auditor`; Solidity/Foundry → `evm-security-auditor`; both if both are present — then launches four reviewers **in parallel** (plus the official Solana MCP's `program_autofixer` when it's installed, deduped against the auditor's own findings) and synthesizes their returns into one report, resolving overlaps and ranking findings by severity.
 
 **Output — `DEBRIEF.md`, exactly five sections:**
 
@@ -195,6 +206,63 @@ Run it every few weeks, or before starting a build in an archetype you haven't t
 
 ---
 
+### `/doctor` — environment preflight
+
+```
+/doctor                      # infers scope from the project
+/doctor solana | evm | all
+```
+
+Verifies the toolchain **before** a build burns its first hour on drift: Solana CLI, **Anchor version vs. what `Anchor.toml`/`Cargo.toml` expect** (the #1 real-world failure mode), Rust, Node ≥ 20, wallet keypair, **devnet SOL balance** (offers the airdrop), RPC reachability, Foundry when EVM is in scope — plus WARN-level boosters: the official Solana Developer MCP and Slither/Aderyn for the EVM auditor. Output is a PASS/WARN/FAIL table with **the exact fix command per failure**, ending in "safe to `/build`" or an ordered fix list. It never installs or overwrites anything without your yes.
+
+---
+
+### `/handoff` — session state
+
+```
+/handoff
+/handoff "stopping for dinner — settle path half done"
+```
+
+Writes **`STATE.md`**: goal, done (from `slice-N:` commits), in-progress with `file:line`, ordered next steps, decisions made and why, git state, deploy state (program IDs, URLs, env var *names* — never values), open security flags, and the literal command to resume with. `/build` reads it and resumes instead of replanning. Run it when a session is about to die, before compaction, or at end of day — a lost session should cost minutes, not a re-derivation.
+
+---
+
+### `/burn` — the hackathon clock
+
+```
+/burn                        # reads .buidl/clock.json (hackathon mode writes it)
+/burn 21:00                  # or set the deadline directly
+```
+
+Wall-clock burn report: elapsed vs. remaining, slices shipped vs. planned (counted from `slice-N:` commits), whether the demo floor is still deployed and green, and a pace verdict. **Behind** never means "rush the fund path" — it answers with exactly which slice to cut or which BUILD to demote to a MOCK. Token spend is the built-in `/cost`; `/burn` tracks the resource hackathons actually run out of.
+
+---
+
+### `/update` — pull latest from main
+
+```
+/update                      # sync to latest main + changelog
+/update check                # read-only: just tell me if I'm behind
+```
+
+The marketplace entry is unpinned, so installs track the **latest commit on `main`**. `/update` compares your install against upstream, shows what changed grouped by area (commands / agents / skills / knowledge), and — before touching anything — detects `knowledge/` files you've customized, asks, and backs them up to `~/.claude/buidl-kit-backup-<date>/`, offering to re-merge them after. Works for both marketplace installs (via the `claude plugin` CLI) and local clones (`git pull --ff-only`). Finishes by reminding you to `/reload-plugins`.
+
+---
+
+## Hackathon mode — the hackathon-build skill
+
+You don't invoke this one — mention a hackathon, a submission deadline, or "ship by tonight" and Claude loads it (or call `/buidl-kit:hackathon-build` explicitly). It's the buidl-kit flow compressed against a wall clock:
+
+1. **Clock first** — the hard deadline goes into `.buidl/clock.json`; `/burn` and the built-in checkpoints (at 50% and 75%) run against it.
+2. **Ruthless scoping** — one core demo loop. Everything else hits the **build/mock triage**: *build* it only if judges touch it live or funds flow through it; *mock* it behind a module interface otherwise; *cut* the rest, out loud.
+3. **Timeboxed scout** — one `repo-scout` pass (~10 min) for the core primitive only; scaffolds for everything else.
+4. **2–4 vertical slices** — slice 1 is the walking skeleton, **deployed in hour one** (devnet + public URL) and kept green after every slice. The last green slice is always your demo floor.
+5. **Simplest now, horizontally scalable later** — every shortcut lands on a seam from `knowledge/hackathon/scale-later-seams.md`: state in Postgres/on-chain never in process memory, idempotent handlers, correctness from the DB (not from being single-instance), mocks and side effects behind module boundaries, config via env. The simple version must survive running two copies — that's the whole scaling story, and it costs ~zero extra time during the event.
+6. **Security floor** — signer/owner checks and checked math on fund paths are never traded for speed; a 15-minute auditor pass scoped to fund-moving files runs before submission. Devnet only.
+
+---
+
 ## The agents (usable standalone)
 
 The commands orchestrate these, but each is useful on its own — just ask for it by name ("use the solana-security-auditor on `programs/vault`"). All of them **return findings rather than writing files**, unless you ask them to write.
@@ -202,8 +270,8 @@ The commands orchestrate these, but each is useful on its own — just ask for i
 | Agent | Use it for | Loads |
 |---|---|---|
 | **`repo-scout`** | "Does this already exist?" Ranked forkable/importable candidates + a fork/adapt plan + an index delta. Returns ≥5 candidates for a well-known need. | `reuse-index/` |
-| **`solana-security-auditor`** | Any Anchor/native Rust program or diff. Maps fund flow, walks the checklist (signer, owner, discriminator, PDA/bump, arithmetic, CPI/program-id, account substitution, sysvar, close/revival, duplicate-mut, reinit, oracle, SPL/Token-2022, upgrade authority, MEV), and proves or flags every `AccountInfo`/`UncheckedAccount`. | `security/solana-audit-checklist.md`, `incident-lessons.md`, `solana/anchor-idioms.md`, `solana/token-2022.md` |
-| **`evm-security-auditor`** | Any Solidity repo or diff. Access control, reentrancy (incl. read-only), CEI/external calls, arithmetic, oracle/TWAP manipulation, approvals, EIP-712 signatures/replay, upgradeability & storage layout, DoS/gas, MEV. Flags anything reinventing an OZ/Solady primitive. | `security/evm-audit-checklist.md`, `incident-lessons.md`, `evm/foundry-and-patterns.md` |
+| **`solana-security-auditor`** | Any Anchor/native Rust program or diff. Ranks entry points by blast radius, maps fund flow, walks the checklist (signer, owner, discriminator, PDA/bump, arithmetic, CPI/program-id, account substitution, sysvar, close/revival, duplicate-mut, reinit, oracle, SPL/Token-2022, upgrade authority, MEV), and proves or flags every `AccountInfo`/`UncheckedAccount`. Cross-checks with the Solana MCP autofixer and Solodit when available. | `security/solana-audit-checklist.md`, `incident-lessons.md`, `solana/anchor-idioms.md`, `solana/token-2022.md` |
+| **`evm-security-auditor`** | Any Solidity repo or diff. Runs Slither/Aderyn first when installed (triaged, noise discarded), ranks entry points by blast radius, then walks: access control, reentrancy (incl. read-only), CEI/external calls, arithmetic, oracle/TWAP manipulation, approvals, EIP-712 signatures/replay, upgradeability & storage layout, DoS/gas, MEV. Flags anything reinventing an OZ/Solady primitive; cites Solodit/Cyfrin precedents for known classes. | `security/evm-audit-checklist.md`, `incident-lessons.md`, `evm/foundry-and-patterns.md` |
 | **`logic-explainer`** | Understanding an unfamiliar crypto repo fast: architecture map, the 5–10 files/functions that matter, the invariants, and every place value moves with the guard on each. | `stack-defaults.md`, the archetype recipe |
 | **`latency-reviewer`** | Slow apps and dropped transactions: hot paths, compute-unit limits, priority fees, ALTs, retry/rebroadcast, commitment level, polling→websocket/Geyser swaps, `getProgramAccounts` scans, caching, Neon pooling — plus where paying for speed (staked RPC, Jito) is actually worth it. | `solana/tx-landing.md`, `latency/rpc-and-realtime.md`, `latency/indexing-caching-db.md` |
 | **`test-gap-finder`** | "What must exist before this ships?" Missing per-archetype non-negotiables, untested auth/arithmetic/state-transition/fund-flow paths with the assertion each should make, and the fastest framework for each gap. | `testing/frameworks-and-matrix.md`, `testing/per-archetype-tests.md` |
@@ -278,6 +346,8 @@ knowledge/
 ├── latency/
 │   ├── rpc-and-realtime.md    RPC choice, websockets, Geyser, webhooks
 │   └── indexing-caching-db.md indexing, caching, Neon pooling & cold starts
+├── hackathon/
+│   └── scale-later-seams.md   simplest-now shortcuts that still scale horizontally later
 ├── testing/
 │   ├── frameworks-and-matrix.md  LiteSVM vs bankrun vs local validator vs forge
 │   └── per-archetype-tests.md    the 5 non-negotiables per archetype
@@ -386,7 +456,7 @@ git add -A && git commit -m "your message"
 git push
 ```
 
-Bump `version` in **both** `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` for a release. Users pull with `/plugin marketplace update buidl-kit-marketplace`.
+That's the whole release: the marketplace entry is **unpinned** (no `version` field), so installs track the latest commit on `main` — no version bump needed. Users get it via Claude Code's background marketplace refresh, or on demand with `/buidl-kit:update` (which also shows them what changed and protects their local knowledge edits) or `/plugin marketplace update buidl-kit-marketplace`, followed by `/reload-plugins`.
 
 > The plugin lives in its own repo, fully separate from your product projects. `.gitignore` covers build artifacts and secrets.
 

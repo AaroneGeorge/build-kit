@@ -12,7 +12,8 @@ You are running **/debrief**, buidl-kit's review skill. Target: $ARGUMENTS (a re
    - `solana-security-auditor` and/or `evm-security-auditor` -> security findings
    - `latency-reviewer` -> hot paths / landing / data
    - `test-gap-finder` -> missing tests
-3. **Synthesize** their returns into one report. Resolve overlaps; rank security findings by severity.
+3. **Solana MCP autofixer** (when the official Solana Developer MCP is available in-session): run its `program_autofixer` over the program(s) alongside the reviewers and fold its findings into the Security section — deduped against the auditor's own, never replacing the auditor's judgment.
+4. **Synthesize** their returns into one report. Resolve overlaps; rank security findings by severity.
 
 ## Output — write `DEBRIEF.md` with EXACTLY these five sections:
 1. **Walkthrough** — architecture map, the handful of files/functions that matter, invariants, where funds flow.
