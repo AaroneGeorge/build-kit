@@ -16,7 +16,7 @@ last_verified: 2026-08-25
 
 # Stack Defaults
 
-These are locked. Skills load this file instead of asking. Edit the ALL-CAPS placeholders to taste.
+These are locked. Skills load this file instead of asking. Edit the defaults below (RPC provider, env var names, DB choice, stack picks) to match your own stack.
 
 ## Chains & priority
 - **Solana = primary.** EVM = secondary (solid but lighter coverage).

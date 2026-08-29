@@ -16,7 +16,7 @@ Before any code: get the **hard deadline** (submission time, timezone). Write `.
 ```json
 { "start": "<ISO now>", "deadline": "<ISO deadline>", "slices_planned": 0 }
 ```
-`/burn` reads this. Update `slices_planned` after planning. Re-check the clock at every checkpoint below.
+`/burn` reads this. Update `slices_planned` after planning. Re-check the clock at every checkpoint below. `.buidl/` is local ephemera — add `.buidl/` to the project's `.gitignore` so the clock never gets committed.
 
 ## 2. Scope ruthlessly — the build/mock triage
 One **core demo loop** only — the single path a judge walks. For every capability the idea implies, decide:

@@ -171,6 +171,7 @@ function test_liquidation_against_mainnet_fork() public {
 | Pin fork tests to a specific block number | Fork against "latest" (non-reproducible, breaks silently as chain state moves) |
 
 ## See also
+- `knowledge/testing/fuzz-and-invariants.md` — the layer above this matrix: property fuzzing + stateful invariants (Foundry, Echidna, Trident) for fund-conservation and share-accounting paths
 - `knowledge/security/solana-audit-checklist.md` — what the auth/arithmetic edge tests above are guarding against
 - `knowledge/solana/anchor-idioms.md` — account constraint patterns these tests exercise
 - `knowledge/solana/tx-landing.md` — transaction construction used in fork/integration tests

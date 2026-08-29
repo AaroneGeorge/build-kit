@@ -1,6 +1,7 @@
 ---
 description: Environment preflight - verify toolchain versions, wallet, devnet SOL, RPC reachability, and optional boosters before a build burns an hour on drift. Exact fix command for every failure.
 argument-hint: "[solana | evm | all - default: infer from the project]"
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 You are running **/doctor**, buidl-kit's environment preflight. Scope: $ARGUMENTS (default: infer — Anchor.toml/Cargo.toml → solana, foundry.toml/*.sol → evm, both → all, neither → solana, the primary). Toolchain drift — especially Anchor-version mismatch — is the #1 way builds lose their first hour. Run the checks via Bash, parallelizing independent ones. Read `${CLAUDE_PLUGIN_ROOT}/knowledge/stack-defaults.md` for the expected stack.
@@ -22,7 +23,7 @@ You are running **/doctor**, buidl-kit's environment preflight. Scope: $ARGUMENT
 - `forge --version` · `anvil --version` · `cast --version`. Missing → `curl -L https://foundry.paradigm.xyz | bash && foundryup`.
 
 **Boosters (WARN-level, never FAIL)**
-- Official Solana Developer MCP available in-session? If not: suggest `claude mcp add --transport http solana-mcp https://mcp.solana.com/mcp` (free, no key — docs search + program autofixer; /build and /debrief use it when present).
+- Official Solana Developer MCP available in-session? The plugin declares it in its `.mcp.json`, so it should be connected (free, no key — docs search + program autofixer; /build and /debrief use it when present). If its tools are missing, the builder likely declined it at install: fix via `/mcp` (approve/reconnect `solana-mcp`) or manually `claude mcp add --transport http solana-mcp https://mcp.solana.com/mcp`.
 - EVM in scope: `slither --version` / `aderyn --version` — the evm-security-auditor uses them when installed.
 - `DATABASE_URL` set if the project uses Neon (WARN if the string isn't the pooled variant).
 

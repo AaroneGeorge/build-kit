@@ -1,0 +1,8 @@
+# buidl-kit test fixture — intentionally vulnerable, not meant to be built or deployed.
+# Writing the exploit tests for the 3 seeded bugs (see ANSWERS.md) is the exercise.
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+# no-op stub so `forge test` on this fixture does nothing destructive
+# (there are no tests; the source under review is src/VulnerableVault.sol)

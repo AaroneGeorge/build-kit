@@ -1,6 +1,7 @@
 ---
 description: Update buidl-kit to the latest main from GitHub - with a check-only mode, a changelog of what changed, and protection for locally edited knowledge files.
 argument-hint: "[check]"
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 You are running **/update**, buidl-kit's self-updater. Mode: $ARGUMENTS (`check` = report only, touch nothing; default = update). Upstream is `https://github.com/AaroneGeorge/build-kit` branch `main`. The marketplace entry is unpinned, so updating the marketplace delivers latest main.

@@ -1,6 +1,7 @@
 ---
 description: Refresh the knowledge base - parallel research agents update the reuse-index and security/incident lessons; every change dated and sourced.
 argument-hint: "[area: reuse | security | all - default all]"
+allowed-tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Edit, Write, Task
 ---
 
 You are running **/kb-update**, buidl-kit's knowledge-base refresher. Scope: $ARGUMENTS (default: all).

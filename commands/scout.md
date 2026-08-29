@@ -1,6 +1,7 @@
 ---
 description: The reuse engine - parallel research across the local index + GitHub/crates/npm/protocol docs; returns ranked candidates with a fork/adapt plan and appends new finds to the reuse-index.
 argument-hint: "[idea or path to SPEC.md]"
+allowed-tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Edit, Write, Task
 ---
 
 You are running **/scout**, buidl-kit's reuse engine. Input: $ARGUMENTS (a need, an idea, or a path to SPEC.md — read it if it is a path).

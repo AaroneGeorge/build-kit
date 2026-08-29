@@ -1,12 +1,13 @@
 ---
 description: Hackathon burn report - elapsed vs remaining wall-clock, slices shipped vs planned, pace verdict, and exactly what to cut or mock if behind.
 argument-hint: "[deadline e.g. 21:00 or 2026-08-30T09:00 - only needed when no .buidl/clock.json]"
+allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 You are running **/burn**, buidl-kit's wall-clock tracker. Wall-clock is the scarce hackathon resource (for token spend, point the builder at the built-in `/cost`).
 
 ## Process
-1. **Load the clock.** Read `.buidl/clock.json` (`start`, `deadline`, `slices_planned` — written by hackathon-build). Missing → take the deadline from $ARGUMENTS (else ask one question), set `start` to the first commit timestamp of the current sprint (fall back: now), and write the file.
+1. **Load the clock.** Read `.buidl/clock.json` (`start`, `deadline`, `slices_planned` — written by hackathon-build). Missing → take the deadline from $ARGUMENTS (else ask one question), set `start` to the first commit timestamp of the current sprint (fall back: now), and write the file. `.buidl/` is local sprint ephemera — if it isn't already ignored in the product repo, add `.buidl/` to its `.gitignore` (don't commit the clock).
 2. **Compute** elapsed, remaining, and % of clock used (`date` via Bash for current time; mind the deadline's timezone).
 3. **Count shipped work:** `git log --oneline` — `slice-N:` commits are the primary signal (slices shipped vs `slices_planned`); other commits are secondary. Check the demo floor is green: last slice deployed (STATE.md deploy state, or ask) and tree not broken (`git status`).
 4. **Verdict — compare % of slices shipped vs % of clock used:**

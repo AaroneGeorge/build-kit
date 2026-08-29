@@ -1,0 +1,31 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Structural gate: refs resolve, knowledge files <=400 lines, frontmatter
+      # well-formed, stale last_verified surfaced as annotations. This is the
+      # hard gate and needs no network or auth.
+      - name: Structural validation
+        run: bash scripts/validate.sh
+
+      # Official plugin validation (manifest + frontmatter). Kept non-blocking:
+      # the CLI subcommand needs a recent Claude Code (>=2.1.233) and may not be
+      # available on every runner. scripts/validate.sh above is the real gate.
+      - name: claude plugin validate (informational)
+        continue-on-error: true
+        run: |
+          npm install -g @anthropic-ai/claude-code || exit 0
+          claude plugin validate . || echo "claude plugin validate unavailable or reported issues (non-blocking)"
